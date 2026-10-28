@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Actividad - Cainiao Iberia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        label .required {
+            color: #e74c3c;
+            margin-left: 4px;
+        }
+        
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+        
+        .radio-option {
+            position: relative;
+        }
+        
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .radio-option label {
+            display: block;
+            padding: 12px 16px;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin: 0;
+        }
+        
+        .radio-option input[type="radio"]:checked + label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+        
+        .radio-option label:hover {
+            background: #e8eaf6;
+            border-color: #667eea;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .success-message {
+            display: none;
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .success-message h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .success-message p {
+            color: #155724;
+        }
+        
+        .helper-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .searchable-select {
+            position: relative;
+            width: 100%;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #667eea;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .dropdown-list.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .dropdown-item:hover {
+            background: #e8eaf6;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-item.hidden {
+            display: none;
+        }
+        
+        .no-results {
+            padding: 12px 16px;
+            color: #999;
+            text-align: center;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Registro de Actividad</h1>
+            <p>Agente Comercial - Cainiao Iberia</p>
+        </div>
+        
+        <form id="activityForm">
+            <div class="form-group">
+                <label>Comercial <span class="required">*</span></label>
+                <select id="comercial" required>
+                    <option value="">Selecciona tu nombre</option>
+                    <option value="Sergio Magan">Sergio Magán</option>
+                    <option value="Jorge Daniel Arango">Jorge Daniel Arango</option>
+                    <option value="José Tralci">José Tralci</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Empresa <span class="required">*</span></label>
+                <div class="searchable-select" id="empresaSelect">
+                    <input type="text" class="search-input" id="empresaSearch" placeholder="Selecciona primero un comercial..." required readonly>
+                    <input type="hidden" id="empresa" name="empresa">
+                    <div class="dropdown-list" id="empresaDropdown"></div>
+                </div>
+                <div class="helper-text">Selecciona tu nombre arriba, luego busca y selecciona tu empresa asignada</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Canal de contacto <span class="required">*</span></label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="canal_llamada" name="canal" value="Llamada" required>
+                        <label for="canal_llamada">📞 Llamada</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="canal_email" name="canal" value="Email">
+                        <label for="canal_email">📧 Email</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="canal_linkedin" name="canal" value="LinkedIn">
+                        <label for="canal_linkedin">💼 LinkedIn</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="canal_reunion" name="canal" value="Reunión">
+                        <label for="canal_reunion">🤝 Reunión</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="canal_visita" name="canal" value="Visita">
+                        <label for="canal_visita">🏢 Visita</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Resultado <span class="required">*</span></label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="res_nocontesta" name="resultado" value="No contesta" required>
+                        <label for="res_nocontesta">❌ No contesta</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="res_contactado" name="resultado" value="Contactado sin decisor">
+                        <label for="res_contactado">📱 Contactado sin decisor</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="res_conversacion" name="resultado" value="Conversación con decisor">
+                        <label for="res_conversacion">💬 Conversación con decisor</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="res_reunion" name="resultado" value="Reunión agendada">
+                        <label for="res_reunion">📅 Reunión agendada</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="res_propuesta" name="resultado" value="Propuesta enviada">
+                        <label for="res_propuesta">📄 Propuesta enviada</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="res_rechazo" name="resultado" value="Rechazo">
+                        <label for="res_rechazo">🚫 Rechazo</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Nota / Descripción <span class="required">*</span></label>
+                <textarea id="nota" placeholder="Ej: Hablé con el director de operaciones, interesado en nuestros servicios de logística. Mencionó problemas con entregas actuales..." required></textarea>
+                <div class="helper-text">Resume brevemente la conversación o actividad realizada</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Próximo paso</label>
+                <input type="text" id="proximo_paso" placeholder="Ej: Enviar propuesta por email, Agendar llamada de seguimiento...">
+                <div class="helper-text">¿Qué acción sigue? (opcional)</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Fecha del próximo paso</label>
+                <input type="date" id="fecha_proximo">
+                <div class="helper-text">¿Cuándo realizarás el próximo paso? (opcional)</div>
+            </div>
+            
+            <button type="submit" class="submit-btn">✅ Registrar Actividad</button>
+        </form>
+        
+        <div id="successMessage" class="success-message">
+            <h3>✅ ¡Actividad registrada con éxito!</h3>
+            <p>La actividad se ha guardado en el CRM y se ha notificado al equipo.</p>
+        </div>
+    </div>
+
+    <script>
+        // Company data by salesperson (verified from CRM)
+        const companiesBySalesperson = {
+            'Sergio Magan': [
+                'ARBUTUS', 'Cuopet', 'DASCK', 'DESPEGUE ONLINE EXPORT', 'Deporvillage',
+                'FarmaPrime', 'Fragance Flow', 'GOLDAN COLOR', 'HERE U.R', 'Hiper Montigalá',
+                'Kave Home', 'Lookfantastic', 'MEJORADA', 'MODELISA', 'Makeup España',
+                'MisterFarma', 'PARAFARMACIA BIO', 'Sevens Nutrition', 'Sport3punto0', 'StockFutbol',
+                'TEXKING', 'Verdeacuaria', 'Visionlowcost'
+            ],
+            'Jorge Daniel Arango': [
+                'Billion Scents', 'CAIXCAR', 'Casa Viva', 'Cosas de Casa y Jardín', 'DreamSpace',
+                'Ferretería Dalpes S.A.', 'GREENSTYLE KSD COSMETICA', 'Guapas Hair Shop', 'HealthyFusion',
+                'INTERNATIONAL COSMETIC SCIENCE SL', 'Juguetes Panre', 'La Oca', 'Liatucloset',
+                'Masterlap Motorsport', 'Multishop', 'NUTRIDEON', 'NUTRIPRIME', 'PETLOVE',
+                'PalaciodelSultan-com', 'Sklum', 'Westwing', 'limpiaybrilla'
+            ],
+            'José Tralci': []
+        };
+        
+        let currentSalesperson = '';
+        
+        // When salesperson changes, populate the company dropdown
+        document.getElementById('comercial').addEventListener('change', function() {
+            currentSalesperson = this.value;
+            const searchInput = document.getElementById('empresaSearch');
+            const dropdown = document.getElementById('empresaDropdown');
+            const hiddenInput = document.getElementById('empresa');
+            
+            // Reset
+            searchInput.value = '';
+            hiddenInput.value = '';
+            dropdown.innerHTML = '';
+            
+            if (!currentSalesperson) {
+                searchInput.placeholder = 'Selecciona primero un comercial...';
+                searchInput.readOnly = true;
+                return;
+            }
+            
+            const companies = companiesBySalesperson[currentSalesperson] || [];
+            
+            if (companies.length === 0) {
+                searchInput.placeholder = 'No hay empresas asignadas';
+                searchInput.readOnly = true;
+                return;
+            }
+            
+            searchInput.placeholder = 'Busca tu empresa aquí...';
+            searchInput.readOnly = false;
+            
+            // Populate dropdown
+            companies.sort().forEach(company => {
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.textContent = company;
+                item.addEventListener('click', function() {
+                    searchInput.value = company;
+                    hiddenInput.value = company;
+                    dropdown.classList.remove('show');
+                });
+                dropdown.appendChild(item);
+            });
+        });
+        
+        // Search functionality
+        document.getElementById('empresaSearch').addEventListener('focus', function() {
+            const dropdown = document.getElementById('empresaDropdown');
+            if (currentSalesperson && companiesBySalesperson[currentSalesperson]?.length > 0) {
+                dropdown.classList.add('show');
+            }
+        });
+        
+        document.getElementById('empresaSearch').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const dropdown = document.getElementById('empresaDropdown');
+            const items = dropdown.querySelectorAll('.dropdown-item');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const companyName = item.textContent.toLowerCase();
+                if (companyName.includes(searchTerm)) {
+                    item.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+            
+            // Show/hide no results message
+            let noResults = dropdown.querySelector('.no-results');
+            if (visibleCount === 0 && searchTerm) {
+                if (!noResults) {
+                    noResults = document.createElement('div');
+                    noResults.className = 'no-results';
+                    noResults.textContent = 'No se encontraron empresas';
+                    dropdown.appendChild(noResults);
+                }
+                noResults.style.display = 'block';
+            } else if (noResults) {
+                noResults.style.display = 'none';
+            }
+            
+            dropdown.classList.add('show');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const select = document.getElementById('empresaSelect');
+            if (!select.contains(e.target)) {
+                document.getElementById('empresaDropdown').classList.remove('show');
+            }
+        });
+        
+        // Form submission
+        document.getElementById('activityForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate company is selected
+            const empresa = document.getElementById('empresa').value;
+            if (!empresa) {
+                alert('Por favor selecciona una empresa de la lista');
+                return;
+            }
+            
+            // Collect form data
+            const data = {
+                comercial: document.getElementById('comercial').value,
+                empresa: empresa,
+                canal: document.querySelector('input[name="canal"]:checked').value,
+                resultado: document.querySelector('input[name="resultado"]:checked').value,
+                nota: document.getElementById('nota').value,
+                proximo_paso: document.getElementById('proximo_paso').value,
+                fecha_proximo: document.getElementById('fecha_proximo').value
+            };
+            
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Registrando...';
+            
+            try {
+                const response = await fetch('/api/register-activity', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('activityForm').style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
+                } else {
+                    alert('Error: ' + result.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '✅ Registrar Actividad';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al registrar la actividad. Por favor intenta de nuevo.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✅ Registrar Actividad';
+            }
+        });
+        
+        // Auto-set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fecha_proximo').setAttribute('min', today);
+    </script>
+</body>
+</html>

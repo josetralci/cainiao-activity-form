@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Agente Comercial Cainiao Iberia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .metric-card h3 {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        
+        .metric-card .value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .metric-card .change {
+            font-size: 14px;
+            color: #10b981;
+        }
+        
+        .metric-card .change.negative {
+            color: #ef4444;
+        }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .funnel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .funnel-stage {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .funnel-stage:hover {
+            background: #f3f4f6;
+        }
+        
+        .funnel-stage .stage-name {
+            flex: 0 0 200px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .funnel-stage .stage-bar {
+            flex: 1;
+            height: 30px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .funnel-stage .stage-bar .fill {
+            height: 100%;
+            background: rgba(255,255,255,0.3);
+            transition: width 0.5s ease;
+        }
+        
+        .funnel-stage .stage-count {
+            flex: 0 0 80px;
+            text-align: right;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 18px;
+        }
+        
+        .funnel-stage .stage-rate {
+            flex: 0 0 80px;
+            text-align: right;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #f9fafb;
+        }
+        
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        tr:hover {
+            background: #f9fafb;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .recommendation-card {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .recommendation-card h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .recommendation-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+        
+        .last-update {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+        
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .refresh-btn:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dashboard - Agente Comercial Cainiao Iberia</h1>
+            <p>Sistema de mejora continua con análisis predictivo y A/B testing</p>
+        </div>
+        
+        <button class="refresh-btn" onclick="refreshData()">Actualizar Datos</button>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3>Total Leads</h3>
+                <div class="value" id="total-leads">10</div>
+                <div class="change">+10 esta semana</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Tasa de Conversión</h3>
+                <div class="value" id="conversion-rate">0%</div>
+                <div class="change">Objetivo: >30%</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Leads Convertidos</h3>
+                <div class="value" id="converted-leads">0</div>
+                <div class="change">Piloto-Cliente</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Leads Perdidos</h3>
+                <div class="value" id="lost-leads">0</div>
+                <div class="change negative">Motivo: Análisis pendiente</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Actividades Registradas</h3>
+                <div class="value" id="total-activities">0</div>
+                <div class="change">Esta semana</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Puntuación Media</h3>
+                <div class="value" id="avg-score">79.6</div>
+                <div class="change">De 100 puntos</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Funnel de Conversión</h2>
+            <div class="funnel" id="funnel-container">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Rendimiento por Fuente</h2>
+            <div class="table-container">
+                <table id="source-table">
+                    <thead>
+                        <tr>
+                            <th>Fuente</th>
+                            <th>Total Leads</th>
+                            <th>Convertidos</th>
+                            <th>Tasa Conversión</th>
+                            <th>Puntuación Media</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Se llenará dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Rendimiento por Categoría</h2>
+            <div class="table-container">
+                <table id="category-table">
+                    <thead>
+                        <tr>
+                            <th>Categoría</th>
+                            <th>Total Leads</th>
+                            <th>Convertidos</th>
+                            <th>Tasa Conversión</th>
+                            <th>Puntuación Media</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Se llenará dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Top 5 Leads con Mayor Probabilidad de Conversión</h2>
+            <div class="table-container">
+                <table id="predictions-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Empresa</th>
+                            <th>Etapa</th>
+                            <th>Puntuación</th>
+                            <th>Probabilidad</th>
+                            <th>Acción Recomendada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Se llenará dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Recomendaciones para la Próxima Semana</h2>
+            <div class="recommendations" id="recommendations-container">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+        
+        <div class="last-update">
+            Última actualización: <span id="last-update-time">Cargando...</span>
+        </div>
+    </div>
+    
+    <script>
+        // Datos de ejemplo (en producción, estos vendrán del CRM)
+        const mockData = {
+            totalLeads: 10,
+            conversionRate: 0,
+            convertedLeads: 0,
+            lostLeads: 0,
+            totalActivities: 0,
+            avgScore: 79.6,
+            funnel: [
+                { stage: 'Asignado', count: 10, rate: 100 },
+                { stage: 'Intento', count: 0, rate: 0 },
+                { stage: 'Conversación', count: 0, rate: 0 },
+                { stage: 'Cualificado', count: 0, rate: 0 },
+                { stage: 'Reunión-Propuesta', count: 0, rate: 0 },
+                { stage: 'Piloto-Cliente', count: 0, rate: 0 },
+                { stage: 'Perdido', count: 0, rate: 0 }
+            ],
+            sources: [
+                { name: 'Tienda propia', total: 8, converted: 0, rate: 0, avgScore: 80, status: 'MANTENER' },
+                { name: 'Mayorista chino', total: 1, converted: 0, rate: 0, avgScore: 72, status: 'ANALIZAR' },
+                { name: 'Miravia', total: 0, converted: 0, rate: 0, avgScore: 0, status: 'SIN DATOS' },
+                { name: 'Amazon.es', total: 0, converted: 0, rate: 0, avgScore: 0, status: 'SIN DATOS' }
+            ],
+            categories: [
+                { name: 'Hogar y decoración', total: 6, converted: 0, rate: 0, avgScore: 80, status: 'PRIORIZAR' },
+                { name: 'Belleza', total: 2, converted: 0, rate: 0, avgScore: 78, status: 'MANTENER' },
+                { name: 'Deporte', total: 1, converted: 0, rate: 0, avgScore: 85, status: 'PRIORIZAR' },
+                { name: 'Juguetes', total: 1, converted: 0, rate: 0, avgScore: 74, status: 'MANTENER' }
+            ],
+            predictions: [
+                { id: 'L-0001', company: 'Kave Home', stage: 'Asignado', score: 92, probability: 85, action: 'Contactar urgente - Alta probabilidad' },
+                { id: 'L-0002', company: 'Sklum', stage: 'Asignado', score: 88, probability: 78, action: 'Contactar esta semana' },
+                { id: 'L-0003', company: 'Deporvillage', stage: 'Asignado', score: 85, probability: 75, action: 'Contactar esta semana' },
+                { id: 'L-0004', company: 'Westwing', stage: 'Asignado', score: 82, probability: 72, action: 'Contactar en 48h' },
+                { id: 'L-0005', company: 'Lookfantastic', stage: 'Asignado', score: 80, probability: 70, action: 'Contactar en 48h' }
+            ],
+            recommendations: [
+                { title: 'Priorizar Kave Home', text: 'Lead con mayor puntuación (92/100) y señal de dolor identificada. Contactar en las próximas 24h usando ángulo de "reducción de incidencias en entregas".' },
+                { title: 'Aumentar leads de Hogar', text: 'Categoría con mejor rendimiento histórico. Priorizar búsqueda de leads en este segmento para la próxima semana.' },
+                { title: 'Revisar fuentes sin datos', text: 'Miravia y Amazon.es no han leads generetidos. Evaluar si vale la pena continuar con estas fuentes o reasignar recursos.' }
+            ]
+        };
+        
+        function renderDashboard(data) {
+            // Métricas principales
+            document.getElementById('total-leads').textContent = data.totalLeads;
+            document.getElementById('conversion-rate').textContent = data.conversionRate + '%';
+            document.getElementById('converted-leads').textContent = data.convertedLeads;
+            document.getElementById('lost-leads').textContent = data.lostLeads;
+            document.getElementById('total-activities').textContent = data.totalActivities;
+            document.getElementById('avg-score').textContent = data.avgScore;
+            
+            // Funnel
+            const funnelContainer = document.getElementById('funnel-container');
+            funnelContainer.innerHTML = '';
+            data.funnel.forEach(stage => {
+                const stageEl = document.createElement('div');
+                stageEl.className = 'funnel-stage';
+                stageEl.innerHTML = `
+                    <div class="stage-name">${stage.stage}</div>
+                    <div class="stage-bar"><div class="fill" style="width: ${stage.rate}%"></div></div>
+                    <div class="stage-count">${stage.count}</div>
+                    <div class="stage-rate">${stage.rate}%</div>
+                `;
+                funnelContainer.appendChild(stageEl);
+            });
+            
+            // Tabla de fuentes
+            const sourceTable = document.getElementById('source-table').querySelector('tbody');
+            sourceTable.innerHTML = '';
+            data.sources.forEach(source => {
+                const statusClass = source.status === 'PRIORIZAR' ? 'badge-success' : 
+                                   source.status === 'MANTENER' ? 'badge-info' : 
+                                   source.status === 'REDUCIR' ? 'badge-danger' : 'badge-warning';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${source.name}</td>
+                    <td>${source.total}</td>
+                    <td>${source.converted}</td>
+                    <td>${source.rate}%</td>
+                    <td>${source.avgScore}</td>
+                    <td><span class="badge ${statusClass}">${source.status}</span></td>
+                `;
+                sourceTable.appendChild(row);
+            });
+            
+            // Tabla de categorías
+            const categoryTable = document.getElementById('category-table').querySelector('tbody');
+            categoryTable.innerHTML = '';
+            data.categories.forEach(category => {
+                const statusClass = category.status === 'PRIORIZAR' ? 'badge-success' : 
+                                   category.status === 'MANTENER' ? 'badge-info' : 
+                                   category.status === 'REDUCIR' ? 'badge-danger' : 'badge-warning';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${category.name}</td>
+                    <td>${category.total}</td>
+                    <td>${category.converted}</td>
+                    <td>${category.rate}%</td>
+                    <td>${category.avgScore}</td>
+                    <td><span class="badge ${statusClass}">${category.status}</span></td>
+                `;
+                categoryTable.appendChild(row);
+            });
+            
+            // Tabla de predicciones
+            const predictionsTable = document.getElementById('predictions-table').querySelector('tbody');
+            predictionsTable.innerHTML = '';
+            data.predictions.forEach(pred => {
+                const probClass = pred.probability > 70 ? 'badge-success' : 
+                                 pred.probability > 40 ? 'badge-warning' : 'badge-danger';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${pred.id}</td>
+                    <td>${pred.company}</td>
+                    <td>${pred.stage}</td>
+                    <td>${pred.score}/100</td>
+                    <td><span class="badge ${probClass}">${pred.probability}%</span></td>
+                    <td>${pred.action}</td>
+                `;
+                predictionsTable.appendChild(row);
+            });
+            
+            // Recomendaciones
+            const recommendationsContainer = document.getElementById('recommendations-container');
+            recommendationsContainer.innerHTML = '';
+            data.recommendations.forEach(rec => {
+                const card = document.createElement('div');
+                card.className = 'recommendation-card';
+                card.innerHTML = `
+                    <h4>${rec.title}</h4>
+                    <p>${rec.text}</p>
+                `;
+                recommendationsContainer.appendChild(card);
+            });
+            
+            // Última actualización
+            document.getElementById('last-update-time').textContent = new Date().toLocaleString('es-ES');
+        }
+        
+        function refreshData() {
+            // En producción, aquí se haría fetch al CRM
+            // Por ahora, usamos datos de ejemplo
+            renderDashboard(mockData);
+            alert('Datos actualizados correctamente');
+        }
+        
+        // Renderizar al cargar
+        renderDashboard(mockData);
+    </script>
+</body>
+</html>

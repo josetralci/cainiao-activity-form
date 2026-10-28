@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "body-parser": "^2.4.0",
+    "express": "^5.3.0",
+    "xlsx": "^0.18.5"
+  },
+  "name": "cainiao-activity-form",
+  "version": "1.0.0",
+  "description": "Formulario de registro de actividades para comerciales de Cainiao Iberia",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["cainiao", "crm", "activity", "form"],
+  "author": "José Tralci",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
