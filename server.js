@@ -20,7 +20,7 @@ app.post('/api/register-activity', async (req, res) => {
     console.log('POST /api/register-activity called');
     console.log('Request body:', req.body);
     try {
-        const { comercial, empresa, canal, resultado, nota, proximo_paso, fecha_proximo } = req.body;
+        const { comercial, empresa, canal, resultado, nota, proximo_paso, fecha_proximo, es_nueva_empresa, nueva_empresa } = req.body;
 
         // Validate required fields
         if (!comercial || !empresa || !canal || !resultado || !nota) {
@@ -40,8 +40,14 @@ app.post('/api/register-activity', async (req, res) => {
             proximo_paso: proximo_paso || '',
             fecha_proximo: fecha_proximo || '',
             fecha_registro: new Date().toISOString(),
-            processed: false
+            processed: false,
+            es_nueva_empresa: es_nueva_empresa || false
         };
+
+        // If new company, include additional data
+        if (es_nueva_empresa && nueva_empresa) {
+            activityData.nueva_empresa = nueva_empresa;
+        }
 
         // Read existing queue or create new
         const queueFile = path.join(__dirname, 'activity_queue.json');
@@ -58,7 +64,7 @@ app.post('/api/register-activity', async (req, res) => {
         // Save queue
         fs.writeFileSync(queueFile, JSON.stringify(queue, null, 2));
 
-        console.log(`Activity queued: ${comercial} - ${empresa} - ${canal} - ${resultado}`);
+        console.log(`Activity queued: ${comercial} - ${empresa} - ${canal} - ${resultado} (New: ${es_nueva_empresa})`);
 
         res.json({
             success: true,
