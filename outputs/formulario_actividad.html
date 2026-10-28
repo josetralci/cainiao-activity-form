@@ -293,6 +293,63 @@
                     <div class="dropdown-list" id="empresaDropdown"></div>
                 </div>
                 <div class="helper-text">Selecciona tu nombre arriba, luego busca y selecciona tu empresa asignada</div>
+                
+                <div style="margin-top: 12px; padding: 12px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0;">
+                    <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+                        <input type="checkbox" id="esNuevaEmpresa" style="margin-right: 8px; width: 18px; height: 18px;">
+                        <span style="font-weight: 500; color: #333;"> Es una empresa nueva (no está en mi lista)</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div id="nuevaEmpresaFields" style="display: none; background: #fff3cd; padding: 20px; border-radius: 8px; border: 2px solid #ffc107; margin-bottom: 24px;">
+                <h3 style="color: #856404; margin: 0 0 16px 0; font-size: 16px;">📝 Datos de la nueva empresa</h3>
+                
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label>Nombre de la empresa <span class="required">*</span></label>
+                    <input type="text" id="nuevaEmpresaNombre" placeholder="Ej: Empresa XYZ S.L.">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label>Website</label>
+                    <input type="text" id="nuevaEmpresaWeb" placeholder="Ej: https://empresa.com">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label>Categoría</label>
+                    <select id="nuevaEmpresaCategoria">
+                        <option value="">Selecciona categoría</option>
+                        <option value="Hogar y decoración">Hogar y decoración</option>
+                        <option value="Belleza y cosmética">Belleza y cosmética</option>
+                        <option value="Juguetes">Juguetes</option>
+                        <option value="Deportes">Deportes</option>
+                        <option value="Moda">Moda</option>
+                        <option value="Alimentación">Alimentación</option>
+                        <option value="Tecnología">Tecnología</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label>¿Cómo conseguiste este lead?</label>
+                    <select id="nuevaEmpresaFuente">
+                        <option value="">Selecciona fuente</option>
+                        <option value="Miravia">Miravia</option>
+                        <option value="Tienda propia">Tienda propia</option>
+                        <option value="Mayorista chino">Mayorista chino</option>
+                        <option value="Amazon.es">Amazon.es</option>
+                        <option value="Referido">Referido</option>
+                        <option value="Feria/Evento">Feria/Evento</option>
+                        <option value="LinkedIn">LinkedIn</option>
+                        <option value="Búsqueda web">Búsqueda web</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Persona de contacto (opcional)</label>
+                    <input type="text" id="nuevaEmpresaContacto" placeholder="Ej: Director de Operaciones">
+                </div>
             </div>
             
             <div class="form-group">
@@ -496,11 +553,21 @@
         document.getElementById('activityForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Validate company is selected
-            const empresa = document.getElementById('empresa').value;
-            if (!empresa) {
-                alert('Por favor selecciona una empresa de la lista');
-                return;
+            const esNuevaEmpresa = document.getElementById('esNuevaEmpresa').checked;
+            let empresa = document.getElementById('empresa').value;
+            
+            // Validate company
+            if (esNuevaEmpresa) {
+                empresa = document.getElementById('nuevaEmpresaNombre').value.trim();
+                if (!empresa) {
+                    alert('Por favor introduce el nombre de la nueva empresa');
+                    return;
+                }
+            } else {
+                if (!empresa) {
+                    alert('Por favor selecciona una empresa de la lista');
+                    return;
+                }
             }
             
             // Collect form data
@@ -511,8 +578,20 @@
                 resultado: document.querySelector('input[name="resultado"]:checked').value,
                 nota: document.getElementById('nota').value,
                 proximo_paso: document.getElementById('proximo_paso').value,
-                fecha_proximo: document.getElementById('fecha_proximo').value
+                fecha_proximo: document.getElementById('fecha_proximo').value,
+                es_nueva_empresa: esNuevaEmpresa
             };
+            
+            // If new company, include additional data
+            if (esNuevaEmpresa) {
+                data.nueva_empresa = {
+                    nombre: empresa,
+                    web: document.getElementById('nuevaEmpresaWeb').value.trim(),
+                    categoria: document.getElementById('nuevaEmpresaCategoria').value,
+                    fuente: document.getElementById('nuevaEmpresaFuente').value,
+                    contacto: document.getElementById('nuevaEmpresaContacto').value.trim()
+                };
+            }
             
             const submitBtn = document.querySelector('.submit-btn');
             submitBtn.disabled = true;
@@ -542,6 +621,24 @@
                 alert('Error al registrar la actividad. Por favor intenta de nuevo.');
                 submitBtn.disabled = false;
                 submitBtn.textContent = '✅ Registrar Actividad';
+            }
+        });
+        
+        // Toggle new company fields
+        document.getElementById('esNuevaEmpresa').addEventListener('change', function() {
+            const nuevaEmpresaFields = document.getElementById('nuevaEmpresaFields');
+            const empresaSearch = document.getElementById('empresaSearch');
+            const empresaSelect = document.getElementById('empresaSelect');
+            
+            if (this.checked) {
+                nuevaEmpresaFields.style.display = 'block';
+                empresaSearch.readOnly = true;
+                empresaSearch.value = '';
+                document.getElementById('empresa').value = '';
+                empresaSelect.style.opacity = '0.5';
+            } else {
+                nuevaEmpresaFields.style.display = 'none';
+                empresaSelect.style.opacity = '1';
             }
         });
         
